@@ -5,7 +5,7 @@
       <div>
         <img class="logo-img" src="../assets/codeing.png" alt="">
         <span class="system_title">代码接龙</span>
-        <el-button @click="returnFirstPage" style="margin-left: 1180px;">首页</el-button>
+        <el-button @click="returnFirstPage" style="margin-left: 1050px;">首页</el-button>
       </div>
     </el-header>
 <!--    页面主体区-->

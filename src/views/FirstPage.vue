@@ -7,7 +7,7 @@
         <span class="system_title">代码接龙</span>
       </div>
       <el-input placeholder="搜索..." style="width: 250px;"></el-input>
-      <el-button style="margin-left:-32.5%;" type="primary" icon="el-icon-search"></el-button>
+      <el-button style="margin-left:-30%;" type="primary" icon="el-icon-search"></el-button>
       <el-button type="info" @click="logOut">退出</el-button>
     </el-header>
 <!--    页面主体区-->
@@ -16,7 +16,7 @@
       <el-aside :width="isCollapse ? '64px' : '200px'">
         <!-- 伸缩按钮 -->
         <!-- <div class="toggle-button" @click="toggleCollapse">|||</div> -->
-        <div class="avatar_box">
+        <div class="avatar_box">s
           <img src="../assets/auto.jpeg" alt="">
           <span style="color: #FFFFFF;">小晴同学</span>
           <p style="margin-left:5px;color: #FFFFFF;">简介：面包我有，给我牛奶</p>
