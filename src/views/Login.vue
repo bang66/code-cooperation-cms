@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import { request } from '../network/request'
+  // import { request } from '../network/request'
   import qs from 'qs'
   export default {
     name: "Login",
@@ -33,6 +33,7 @@
           username: '',
           password: ''
         },
+        newToken:'',
         loginFormRules: {
           username: [
             { required: true, message: '请输入电子邮箱', trigger: 'blur' },
@@ -60,51 +61,58 @@
       login() {
         this.$refs.loginFormRef.validate().then(res => {
           let formData = qs.stringify({
-            emlAddr:this.loginForm.username,
-            passwd:this.loginForm.password
+            "emlAddr":this.loginForm.username,
+            "passwd":this.loginForm.password
           });
-          request({
-            url: "/api/v1/login",
-            method: 'post',
-            data: formData,
-            header: {
-              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'  //如果写成contentType会报错
-            },
-          }).then(res => {
-            console.log(res);
-            //result是对象，前端获取属性的方法是 对象.属性名，最后再赋值给一个变量对象data
-            // let data1 = result.data;
-            let data = res.data
-            if(data.code == 0){
-              this.$message.success("登录成功!");
-              window.localStorage.setItem('token',data.data.token);
-              // console.log('qq', data.data.token)
-              // let staffId1 = data1.result.data.staffId;
-              // this.$store.commit('updateStaffId', staffId1);//把staffid存到网页某个地方中
-              this.$router.replace("/firstPage")
-            }else if(data.code == 2000){
-              this.$message.success("账号错误!");
-            }else if(data.code == 2001){
-              this.$message.success("账号未注册!");
-            }else if(data.code == 2002){
-              this.$message.success("邮件验证码发送失败!");
-            }else if(data.code == 2003){
-              this.$message.success("未向此邮箱发送验证码!");
-            }else if(data.code == 2004){
-              this.$message.success("验证码有误!");
-            }else if(data.code == 2005){
-              this.$message.success("此账号已注册!");
-            }else if(data.code == 2006){
-              this.$message.success("此项目已被收藏过!");
-            }
-          }).catch(error=> {
+          this.formInstance.userLogin(formData).then(res=>{
+              let data = res.data
+              if(data.code == 0){
+                this.$message.success("登录成功!");
+
+                // console.log('qq', data.data.token)
+                window.localStorage.setItem('token',data.data.token);//把token存在本地
+                this.newToken = window.localStorage.getItem('token');//取出存在本地的token
+                this.getHome()
+              }else if(data.code == 2000){
+                this.$message.success("账号错误!");
+              }else if(data.code == 2001){
+                this.$message.success("账号未注册!");
+              }else if(data.code == 2002){
+                this.$message.success("邮件验证码发送失败!");
+              }else if(data.code == 2003){
+                this.$message.success("未向此邮箱发送验证码!");
+              }else if(data.code == 2004){
+                this.$message.success("验证码有误!");
+              }else if(data.code == 2005){
+                this.$message.success("此账号已注册!");
+              }else if(data.code == 2006){
+                this.$message.success("此项目已被收藏过!");
+              }
+           }).catch(error=> {
             console.log(error);
             this.$message.error("因网络波动,操作失败!");
-          })
+          });
         });
       },
       resetLoginForm() {
-        this.$router.replace("/register")//登录成功进入管理系统界面
+        this.$router.replace("/register")
+      },
+      getHome() {
+        this.tokenInstance.homePage().then(res=>{
+          console.log('res',res)
+          console.log('token',window.localStorage.getItem('token'))
+          let data = res.data
+          if(data.code == 0){
+            let information = data.data
+            this.$router.push({
+              path:'/firstPage',
+              query:information,
+            });
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
       }
     }
   }

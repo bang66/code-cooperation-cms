@@ -5,7 +5,11 @@ import router from './router'
 // import XLSX from 'xlsx'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import formInstance from './api/index';
+import tokenInstance from './api/tokenIndex';
 
+Vue.prototype.formInstance = formInstance  //axios实例
+Vue.prototype.tokenInstance = tokenInstance
 //导入全局样式表
 import './assets/css/global.css'
 

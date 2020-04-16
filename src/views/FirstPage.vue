@@ -18,8 +18,8 @@
         <!-- <div class="toggle-button" @click="toggleCollapse">|||</div> -->
         <div class="avatar_box">s
           <img src="../assets/auto.jpeg" alt="">
-          <span style="color: #FFFFFF;">小晴同学</span>
-          <p style="margin-left:5px;color: #FFFFFF;">简介：面包我有，给我牛奶</p>
+          <span style="color: #FFFFFF;">{{userName}}</span>
+          <p style="margin-left:5px;color: #FFFFFF;">个性签名：{{userSignature}}</p>
           <div @click="collectProject" style="margin-left: 10px;">
             <i class="el-icon-star-off"></i>
             <span style="margin-left: 5px;color: #FFFFFF;">我收藏的项目</span>
@@ -55,121 +55,14 @@
             <h3 class="medium">{{ item }}</h3>
           </el-carousel-item>
         </el-carousel>
-        <div class="border">
+        <div class="border" v-for="(project,index) in projectList" :value="project" :key="index">
           <div class="name">
             <img src="../assets/auto.jpeg" alt="">
             <p style="margin-top: -6%;margin-left: 5%;">易烊千玺</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2020.03.30</p>
+            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">{{project.createTime}}</p>
           </div>
-          <div @click="sclick()">
-            public class Test {<br />
-              &emsp;public static void main(String[] args) {<br />
-                &emsp;&emsp;System.out.println("hello world");<br />
-              &emsp;}<br />
-            }
-          </div>
-        </div>
-        <div class="border">
-          <div class="name">
-            <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">李现</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2020.03.03</p>
-          </div>
-          <div @click="clickSec()">
-            public class Add {<br />
-              &emsp;private int a;<br />
-              &emsp;private int b;<br />
-              &emsp;public int add(int x, int y) {<br />
-                &emsp;&emsp;this.a = x;<br />
-                ......
-                <!-- &emsp;&emsp;this.b = y;<br />
-                &emsp;&emsp;return (a + b);<br />
-              &emsp;}<br />
-              &emsp;public static void main(String[] args) {<br />
-                &emsp;&emsp;Add addObj = new Add();<br />
-                &emsp;&emsp;int res = addObj.add(2, 3);<br />
-                &emsp;&emsp;System.out.println(res);<br />
-              &emsp;}<br />
-            } -->
-          </div>
-        </div>
-        <div class="border">
-          <div class="name">
-            <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">书书是个傻子</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2020.02.01</p>
-          </div>
-          <div @click="sclick()">
-            public class AddPrefix {<br />
-              &emsp;private String a = "aaa";<br />
-              &emsp;public String addPrefix(String prefix) {<br />
-                &emsp;&emsp;return prefix + this.a;<br />
-              &emsp;}<br />
-              ......
-              <!-- &emsp;public static void main(String[] args) {<br />
-                &emsp;&emsp;Add addPrefixObj = new Add();<br />
-                &emsp;&emsp;String prefix = "pre";<br />
-                &emsp;&emsp;String res = addPrefixObj.addPrefix(prefix);<br />
-                &emsp;&emsp;System.out.println(res);<br />
-              &emsp;}<br />
-            } -->
-          </div>
-        </div>
-        <div class="border">
-          <div class="name">
-            <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">小明与小红</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2019.12.11</p>
-          </div>
-          <div @click="sclick()">
-            public class Bubble {<br />
-              &emsp;public static void bubbleSort1(int [] a, int n){<br />
-                &emsp;&emsp;int i, j;<br />
-                &emsp;&emsp;for(i=0; i&lt;n; i++){<br />
-                 &emsp;&emsp;&emsp;for(j=1; j&lt;n-i; j++){<br />
-                   ......
-                    <!-- &emsp;&emsp;&emsp;&emsp;if(a[j-1] > a[j]){<br />
-                      &emsp;&emsp;&emsp;&emsp;&emsp;int temp;<br />
-                      &emsp;&emsp;&emsp;&emsp;&emsp;temp = a[j-1];<br />
-                      &emsp;&emsp;&emsp;&emsp;&emsp;a[j-1] = a[j];<br />
-                      &emsp;&emsp;&emsp;&emsp;&emsp;a[j]=temp;<br />
-                    }<br />
-                  }<br />
-                }<br />
-              }<br />
-              public static void main(String[] args) {<br />
-                int[] arr = {1,1,2,0,9,3,12,7,8,3,4,65,22};<br />
-                BubbleSort.bubbleSort1(arr, arr.length);<br />
-                for(int i:arr){<br />
-                  System.out.print(i+",");<br />
-                }<br />
-              }<br />
-            } -->
-          </div>
-        </div>
-        <div class="border"><div class="name">
-            <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">可乐儿</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2018.07.15</p>
-          </div>
-          <div @click="sclick()">
-            public class Fib {<br />
-              &emsp;public static int getFib(int n) {<br />
-                &emsp;&emsp;if(n < 0) {<br />
-                  &emsp;&emsp;&emsp;return -1;<br />
-                &emsp;&emsp;} else if(n == 0) {<br />
-                ......
-                  <!-- &emsp;&emsp;&emsp;return 0;<br />
-                &emsp;&emsp;} else if (n == 1 || n ==2) {<br />
-                  &emsp;&emsp;&emsp;return 1;<br />
-                &emsp;&emsp;} else {<br />
-                  &emsp;&emsp;&emsp;return getFib(n - 1) + getFib(n - 2);<br />
-                &emsp;&emsp;}<br />
-              &emsp;}<br />
-              &emsp;public static void main(String[] args) {<br />
-                &emsp;&emsp;Fib.getFib(10);<br />
-              &emsp;}<br />
-            } -->
+          <div @click="sclick()" style="white-space: pre-line;margin-top: -30px;">
+            {{project.code}}
           </div>
         </div>
 <!--        路由占位符-->
@@ -186,31 +79,14 @@
     name: "FirstPage",
     data() {
       return {
+        information:{},
+        userName:'',
+        userSignature:'',
+        projectList:[],
+        code:'',
         //是否折叠
         isCollapse: false,
         baseUrl: '/home',
-        menuList: [
-          {
-            menuName: '预约管理',
-            menuPath: '/appointment',
-            menuIcon: 'el-icon-s-management'
-          },
-          {
-            menuName: '排号管理',
-            menuPath: '/queue',
-            menuIcon: 'el-icon-message-solid'
-          },
-          {
-            menuName: '病例录入',
-            menuPath: '/case',
-            menuIcon: 'el-icon-s-order'
-          },
-          {
-            menuName: '职工管理',
-            menuPath: '/staff',
-            menuIcon: 'el-icon-s-custom'
-          }
-        ],
         //被激活的链接地址
         activePath: ''
       }
@@ -218,7 +94,28 @@
     created() {
       this.activePath = window.sessionStorage.getItem('activePath');
     },
+    mounted(){
+      this.information = this.$route.query;
+      this.init()
+      console.log('fg',this.information)
+    },
     methods: {
+      init() {
+        this.userName = this.information.userName
+        this.userSignature = this.information.userSignature
+        this.projectList = this.information.projectList
+        // this.handleCode()
+      },
+      handleCode() {
+        // console.log('null',this.projectList)
+        for (var i = 0, len = this.projectList.length; i < len; i++) {
+          let code = this.projectList[i].code
+          console.log('iii',code)
+        	let newCode = this.projectList[i].code.replace(/\n/g,"<br/>")
+          console.log('code',newCode)
+          this.projectList[i].code = newCode
+        }
+      },
       logOut() {
         this.$router.replace("/")
         // window.sessionStorage.clear();
@@ -229,6 +126,20 @@
         this.$router.replace("/textEdite")
       },
       collectProject(){
+        this.tokenInstance.checkColl().then(res=>{
+          console.log('suc',res)
+          let data = res.data
+          if(data.code == 0){
+            let information = data.data
+            // this.$router.push({
+            //   path:'/firstPage',
+            //   query:information,
+            // });
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
         this.$router.replace("/collectList")
       },
       joinProject(){

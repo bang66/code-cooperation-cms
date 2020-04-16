@@ -64,12 +64,24 @@
       },
       //发送验证码
       sendMethod() {
-        let pageSize = this.loginForm.username;
-        request({
-            url: '/api/v1/send/code?emlAddr='+pageSize,
-            method: 'GET',
-        }).then(res => {
-        })
+        // let formData = qs.stringify({
+        //   "emlAddr":this.loginForm.username
+        // });
+        this.formInstance.sendCode({params:{"emlAddr":this.loginForm.username}}).then(res=>{
+          console.log("qq",res)
+          let data = res.data
+          if(data.code == 0){
+
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
+        // request({
+        //     url: '/api/v1/send/code?emlAddr='+pageSize,
+        //     method: 'GET',
+        // }).then(res => {
+        // })
       },
       //注册
       resetLoginForm() {
@@ -81,17 +93,10 @@
           code:codeV,
           passwd:pass
         });
-        request({
-            url: '/api/v1/regist',
-            method: 'post',
-            data: formData,
-            header: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'  //如果写成contentType会报错
-            },
-        }).then(res => {
+        this.formInstance.regist(formData).then(res=>{
+          console.log("iii",res)
           if(this.loginForm.password == this.loginForm.secondPass){
             let data = res.data
-            console.log(res);
             if(data.code == 0){
               window.localStorage.setItem('token',data.data.token);
               this.$router.replace("/firstPage")//登录成功进入管理系统界面
@@ -113,7 +118,43 @@
           }else{
             this.$message.error("两次密码必须相同!");
           }
-        })
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
+        // request({
+        //     url: '/api/v1/regist',
+        //     method: 'post',
+        //     data: formData,
+        //     header: {
+        //         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'  //如果写成contentType会报错
+        //     },
+        // }).then(res => {
+        //   if(this.loginForm.password == this.loginForm.secondPass){
+        //     let data = res.data
+        //     console.log(res);
+        //     if(data.code == 0){
+        //       window.localStorage.setItem('token',data.data.token);
+        //       this.$router.replace("/firstPage")//登录成功进入管理系统界面
+        //     }else if(data.code == 2000){
+        //       this.$message.success("账号错误!");
+        //     }else if(data.code == 2001){
+        //       this.$message.success("账号未注册!");
+        //     }else if(data.code == 2002){
+        //       this.$message.success("邮件验证码发送失败!");
+        //     }else if(data.code == 2003){
+        //       this.$message.success("未向此邮箱发送验证码!");
+        //     }else if(data.code == 2004){
+        //       this.$message.success("验证码有误!");
+        //     }else if(data.code == 2005){
+        //       this.$message.success("此账号已注册!");
+        //     }else if(data.code == 2006){
+        //       this.$message.success("此项目已被收藏过!");
+        //     }
+        //   }else{
+        //     this.$message.error("两次密码必须相同!");
+        //   }
+        // })
       }
     }
   }
