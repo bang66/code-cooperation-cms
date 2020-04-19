@@ -14,7 +14,19 @@ export default {
   homePage (){
   	return tokenInstance.get('/api/v1/homePage/get')
   },
-  checkColl (){
-  	return tokenInstance.get('/api/v1/project/favourite')
+  getColl (){
+  	return tokenInstance.get('/api/v1/mine/favourite')
   },
+  createProjectApi (data){
+    return tokenInstance.post('/api/v1/project/create',data)
+  },
+  submitProject (data){
+    return tokenInstance.post('/api/v1/project/submit',data)
+  },
+  getJoin(){
+    return tokenInstance.get('/api/v1/mine/join')
+  },
+  projectDetail(data){
+    return tokenInstance.get('/api/v1/project/detail',data)
+  }
 };

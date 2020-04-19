@@ -9,12 +9,14 @@
     </div>
     <div style="float: right;margin-right: 15px;margin-top: 5px;">
       <el-button @click="run" type="warning">运行</el-button>
+      <el-button @click="submit" type="success">提交</el-button>
       <el-button @click="returnFirst" type="primary">返回</el-button>
     </div>
   </div>
 </template>
 
 <script>
+  import qs from 'qs'
   import {
     quillEditor
   } from 'vue-quill-editor'
@@ -22,15 +24,22 @@
   import 'quill/dist/quill.snow.css'
   import 'quill/dist/quill.bubble.css'
   export default {
-    name: 'FuncFormsEdit',
+    name: 'TextEdite',
     components: {
       quillEditor
     },
     data() {
       return {
-        content: 'public class Add {<br />&emsp;private int a;<br />&emsp;private int b;<br />&emsp;public int add(int x, int y) {<br />&emsp;&emsp;this.a = x;<br />&emsp;&emsp;this.b = y;<br />&emsp;&emsp;return (a + b);<br />&emsp;}<br />&emsp;public static void main(String[] args) {<br />&emsp;&emsp;Add addObj = new Add();<br />&emsp;&emsp;int res = addObj.add(2, 3);<br />&emsp;&emsp;System.out.println(res);<br />&emsp;}<br />}',
+        id:'',
+        content: '',
         editorOption: {}
       }
+    },
+    mounted(){
+      this.id = window.localStorage.getItem('id');
+      // this.information.id = this.$route.query;
+      // this.init()
+      console.log('id',this.id)
     },
     methods:{
       run(){
@@ -43,6 +52,23 @@
             });
           }
         });
+      },
+      submit(){
+        let newId = this.id;
+        let newContent = this.content;
+        let formData = qs.stringify({
+          projectId:newId,
+          code:newContent,
+        });
+        if(this.content != ''){
+          this.tokenInstance.submitProject(formData).then(res =>{
+            console.log('res',res)
+            // let id = res.data.data
+            // window.localStorage.setItem('id',id);//把token存在本地
+            // this.newToken = window.localStorage.getItem('id');//取出存在本地的token
+            // this.$router.replace("/textEdite")
+          })
+        }
       },
       returnFirst(){
         this.$router.replace("/firstPage")

@@ -15,8 +15,8 @@
         <!-- 伸缩按钮 -->
         <div class="avatar_box">
           <img src="../assets/auto.jpeg" alt="">
-          <span style="color: #FFFFFF;">小晴同学</span>
-          <p style="margin-left:5px;color: #FFFFFF;">简介：面包我有，给我牛奶</p>
+          <span style="color: #FFFFFF;">{{userName}}</span>
+          <p style="margin-left:5px;color: #FFFFFF;">简介：{{userSignature}}</p>
           <div @click="collectProject" style="margin-left: 10px;">
             <i class="el-icon-star-off"></i>
             <span style="margin-left: 5px;color: #FFFFFF;">我收藏的项目</span>
@@ -26,7 +26,21 @@
             <span style="margin-left: 5px;color: #FFFFFF;">我参与的项目</span>
           </div>
           <div style="margin-left: 10px;margin-top: 5px;">
-            <el-button @click="createProject" style="height: 30px;width: 130px;margin-top: 10px;" type="primary">创建项目</el-button>
+            <el-button @click="create" style="height: 30px;width: 130px;margin-top: 10px;" type="primary">创建项目</el-button>
+            <el-dialog title="创建项目" :visible.sync="dialogFormVisible" width="40%">
+              <el-form :model="createProjectModel">
+                <el-form-item label="项目名称(类名):" label-width="120px">
+                  <el-input style="width: 280px;" v-model="createProjectModel.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="项目简介:" label-width="80px">
+                  &emsp;&emsp;&emsp;<el-input style="width: 280px;" v-model="createProjectModel.description" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="createProject">确 定</el-button>
+              </div>
+            </el-dialog>  
           </div>
         </div>
 <!--        侧边栏菜单区域-->
@@ -42,43 +56,16 @@
 <!--      右侧内容主体-->
       <el-main>
         <span style="color: #42B983">我收藏的项目</span>
-        <div class="border">
+        <div class="border" v-for="(project,index) in collectInformation" :value="project" :key="index">
           <div class="name">
             <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">易烊千玺</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2020.03.30</p>
+            <p style="margin-top: -6%;margin-left: 5%;">{{project.creator}}</p>
+            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">{{project.createTime}}</p>
           </div>
-          <div @click="sclick()">
-            public class Test {<br />
-              &emsp;public static void main(String[] args) {<br />
-                &emsp;&emsp;System.out.println("hello world");<br />
-              &emsp;}<br />
-            }
+          <div @click="sclick()" style="white-space: pre-line;margin-top: -30px;">
+            {{project.code}}
           </div>
         </div>
-        <div class="border">
-          <div class="name">
-            <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">书书是个傻子</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2020.02.01</p>
-          </div>
-          <div @click="sclick()">
-            public class AddPrefix {<br />
-              &emsp;private String a = "aaa";<br />
-              &emsp;public String addPrefix(String prefix) {<br />
-                &emsp;&emsp;return prefix + this.a;<br />
-              &emsp;}<br />
-              ......
-              <!-- &emsp;public static void main(String[] args) {<br />
-                &emsp;&emsp;Add addPrefixObj = new Add();<br />
-                &emsp;&emsp;String prefix = "pre";<br />
-                &emsp;&emsp;String res = addPrefixObj.addPrefix(prefix);<br />
-                &emsp;&emsp;System.out.println(res);<br />
-              &emsp;}<br />
-            } -->
-          </div>
-        </div>
-      </div>
 <!--        路由占位符-->
         <!-- <keep-alive>
           <router-view></router-view>
@@ -90,34 +77,22 @@
 
 <script>
   export default {
-    name: "FirstPage",
+    name: "CollectList",
     data() {
       return {
+        collectInformation:[],
+        userName:'',
+        userSignature:'',
+        createTime:'',
+        name:'',
+        code:'',
+        createProjectModel:{
+          name:'',
+          description:''
+        },
+        dialogFormVisible:false,
         //是否折叠
         isCollapse: false,
-        baseUrl: '/home',
-        menuList: [
-          {
-            menuName: '预约管理',
-            menuPath: '/appointment',
-            menuIcon: 'el-icon-s-management'
-          },
-          {
-            menuName: '排号管理',
-            menuPath: '/queue',
-            menuIcon: 'el-icon-message-solid'
-          },
-          {
-            menuName: '病例录入',
-            menuPath: '/case',
-            menuIcon: 'el-icon-s-order'
-          },
-          {
-            menuName: '职工管理',
-            menuPath: '/staff',
-            menuIcon: 'el-icon-s-custom'
-          }
-        ],
         //被激活的链接地址
         activePath: ''
       }
@@ -125,12 +100,50 @@
     created() {
       this.activePath = window.sessionStorage.getItem('activePath');
     },
+    mounted(){
+      this.userName = window.localStorage.getItem('userName');//取出存在本地的token
+      this.userSignature = window.localStorage.getItem('userSignature');//取出存在本地的token
+      this.init()
+    },
     methods: {
+      init(){
+        this.tokenInstance.getColl().then(res=>{
+          let data = res.data
+          if(data.code == 0){
+            this.collectInformation = data.data
+            console.log('iiii',collectInformation)
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
+      },
       returnFirstPage(){
         this.$router.replace("/firstPage")
       },
+      create(){
+        this.dialogFormVisible = true
+      },
       createProject(){
-        this.$router.replace("/textEdite")
+        let name = this.createProjectModel.name;
+        let desc = this.createProjectModel.description;
+        let formData = qs.stringify({
+          projectName:name,
+          projectDesc:desc,
+        });
+        if(this.createProjectModel.name != ''&&this.createProjectModel.description != ''){
+          this.tokenInstance.createProjectApi(formData).then(res =>{
+            this.dialogFormVisible = false
+            let id = res.data.data
+            window.localStorage.setItem('id',id);//把token存在本地
+            // this.newToken = window.localStorage.getItem('id');//取出存在本地的token
+            this.$router.replace("/textEdite")
+            // this.$router.push({
+            //   path:'/textEdite',
+            //   query:id,
+            // });
+          })
+        }
       },
       collectProject(){
         this.$router.replace("/collectList")

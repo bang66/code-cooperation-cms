@@ -1,11 +1,7 @@
 <template>
   <div class="detail">
-    <div class="border">
-      public class Test {<br />
-        &emsp;public static void main(String[] args) {<br />
-          &emsp;&emsp;System.out.println("hello world");<br />
-        &emsp;}<br />
-      }
+    <div class="border" v-model="codeDetail" style="white-space: pre-line;">
+      {{codeDetail}}
     </div>
     <div>
       <div style="float: right;margin-top: 5px;">
@@ -47,10 +43,20 @@
     name: "DetailPage",
     data() {
       return {
-        displayCom:false
+        displayCom:false,
+        codeDetail:'',
+        detail:{}
       }
     },
+    mounted(){
+      this.detail = this.$route.query;
+      console.log('detail',this.detail)
+      this.init()
+    },
     methods: {
+      init(){
+        this.codeDetail = this.detail.code
+      },
       collect(){
         this.$message('收藏成功！');
       },

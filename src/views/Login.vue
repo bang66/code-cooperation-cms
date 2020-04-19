@@ -99,8 +99,6 @@
       },
       getHome() {
         this.tokenInstance.homePage().then(res=>{
-          console.log('res',res)
-          console.log('token',window.localStorage.getItem('token'))
           let data = res.data
           if(data.code == 0){
             let information = data.data

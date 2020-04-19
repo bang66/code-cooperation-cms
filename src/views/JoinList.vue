@@ -15,8 +15,8 @@
         <!-- 伸缩按钮 -->
         <div class="avatar_box">
           <img src="../assets/auto.jpeg" alt="">
-          <span style="color: #FFFFFF;">小晴同学</span>
-          <p style="margin-left:5px;color: #FFFFFF;">简介：面包我有，给我牛奶</p>
+          <span style="color: #FFFFFF;">{{userName}}</span>
+          <p style="margin-left:5px;color: #FFFFFF;">简介：{{userSignature}}</p>
           <div @click="collectProject" style="margin-left: 10px;">
             <i class="el-icon-star-off"></i>
             <span style="margin-left: 5px;color: #FFFFFF;">我收藏的项目</span>
@@ -26,7 +26,21 @@
             <span style="margin-left: 5px;color: #FFFFFF;">我参与的项目</span>
           </div>
           <div style="margin-left: 10px;margin-top: 5px;">
-            <el-button @click="createProject" style="height: 30px;width: 130px;margin-top: 10px;" type="primary">创建项目</el-button>
+            <el-button @click="create" style="height: 30px;width: 130px;margin-top: 10px;" type="primary">创建项目</el-button>
+            <el-dialog title="创建项目" :visible.sync="dialogFormVisible" width="40%">
+              <el-form :model="createProjectModel">
+                <el-form-item label="项目名称(类名):" label-width="120px">
+                  <el-input style="width: 280px;" v-model="createProjectModel.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="项目简介:" label-width="80px">
+                  &emsp;&emsp;&emsp;<el-input style="width: 280px;" v-model="createProjectModel.description" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="createProject">确 定</el-button>
+              </div>
+            </el-dialog>
           </div>
         </div>
 <!--        侧边栏菜单区域-->
@@ -42,85 +56,14 @@
 <!--      右侧内容主体-->
       <el-main>
         <span style="color: #42B983">我参与的项目</span>
-        <div class="border">
+        <div class="border" v-for="(project,index) in joinInformation" :value="project" :key="index">
           <div class="name">
             <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">李现</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2020.03.03</p>
+            <p style="margin-top: -6%;margin-left: 5%;">{{project.creator}}</p>
+            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">{{project.createTime}}</p>
           </div>
-          <div @click="sclick()">
-            public class Add {<br />
-              &emsp;private int a;<br />
-              &emsp;private int b;<br />
-              &emsp;public int add(int x, int y) {<br />
-                &emsp;&emsp;this.a = x;<br />
-                ......
-                <!-- &emsp;&emsp;this.b = y;<br />
-                &emsp;&emsp;return (a + b);<br />
-              &emsp;}<br />
-              &emsp;public static void main(String[] args) {<br />
-                &emsp;&emsp;Add addObj = new Add();<br />
-                &emsp;&emsp;int res = addObj.add(2, 3);<br />
-                &emsp;&emsp;System.out.println(res);<br />
-              &emsp;}<br />
-            } -->
-          </div>
-        </div>
-        <div class="border">
-          <div class="name">
-            <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">小明与小红</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2019.12.11</p>
-          </div>
-          <div @click="sclick()">
-            public class Bubble {<br />
-              &emsp;public static void bubbleSort1(int [] a, int n){<br />
-                &emsp;&emsp;int i, j;<br />
-                &emsp;&emsp;for(i=0; i&lt;n; i++){<br />
-                 &emsp;&emsp;&emsp;for(j=1; j&lt;n-i; j++){<br />
-                   ......
-                    <!-- &emsp;&emsp;&emsp;&emsp;if(a[j-1] > a[j]){<br />
-                      &emsp;&emsp;&emsp;&emsp;&emsp;int temp;<br />
-                      &emsp;&emsp;&emsp;&emsp;&emsp;temp = a[j-1];<br />
-                      &emsp;&emsp;&emsp;&emsp;&emsp;a[j-1] = a[j];<br />
-                      &emsp;&emsp;&emsp;&emsp;&emsp;a[j]=temp;<br />
-                    }<br />
-                  }<br />
-                }<br />
-              }<br />
-              public static void main(String[] args) {<br />
-                int[] arr = {1,1,2,0,9,3,12,7,8,3,4,65,22};<br />
-                BubbleSort.bubbleSort1(arr, arr.length);<br />
-                for(int i:arr){<br />
-                  System.out.print(i+",");<br />
-                }<br />
-              }<br />
-            } -->
-          </div>
-        </div>
-        <div class="border"><div class="name">
-            <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">可乐儿</p>
-            <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">2018.07.15</p>
-          </div>
-          <div @click="sclick()">
-            public class Fib {<br />
-              &emsp;public static int getFib(int n) {<br />
-                &emsp;&emsp;if(n < 0) {<br />
-                  &emsp;&emsp;&emsp;return -1;<br />
-                &emsp;&emsp;} else if(n == 0) {<br />
-                ......
-                  <!-- &emsp;&emsp;&emsp;return 0;<br />
-                &emsp;&emsp;} else if (n == 1 || n ==2) {<br />
-                  &emsp;&emsp;&emsp;return 1;<br />
-                &emsp;&emsp;} else {<br />
-                  &emsp;&emsp;&emsp;return getFib(n - 1) + getFib(n - 2);<br />
-                &emsp;&emsp;}<br />
-              &emsp;}<br />
-              &emsp;public static void main(String[] args) {<br />
-                &emsp;&emsp;Fib.getFib(10);<br />
-              &emsp;}<br />
-            } -->
+          <div @click="sclick()" style="white-space: pre-line;margin-top: -30px;">
+            {{project.code}}
           </div>
         </div>
 <!--        路由占位符-->
@@ -133,35 +76,21 @@
 </template>
 
 <script>
+  import qs from 'qs'
   export default {
-    name: "FirstPage",
+    name: "JoinList",
     data() {
       return {
+        joinInformation:[],
+        userName:'',
+        userSignature:'',
+        createProjectModel:{
+          name:'',
+          description:''
+        },
+        dialogFormVisible:false,
         //是否折叠
         isCollapse: false,
-        baseUrl: '/home',
-        menuList: [
-          {
-            menuName: '预约管理',
-            menuPath: '/appointment',
-            menuIcon: 'el-icon-s-management'
-          },
-          {
-            menuName: '排号管理',
-            menuPath: '/queue',
-            menuIcon: 'el-icon-message-solid'
-          },
-          {
-            menuName: '病例录入',
-            menuPath: '/case',
-            menuIcon: 'el-icon-s-order'
-          },
-          {
-            menuName: '职工管理',
-            menuPath: '/staff',
-            menuIcon: 'el-icon-s-custom'
-          }
-        ],
         //被激活的链接地址
         activePath: ''
       }
@@ -169,12 +98,51 @@
     created() {
       this.activePath = window.sessionStorage.getItem('activePath');
     },
+    mounted(){
+      this.userName = window.localStorage.getItem('userName');//取出存在本地的token
+      this.userSignature = window.localStorage.getItem('userSignature');//取出存在本地的token
+      this.init()
+    },
     methods: {
-      returnFirstPage(){
-        this.$router.replace("/firstPage")
+      init(){
+        this.tokenInstance.getJoin().then(res=>{
+          console.log('ppp',res)
+          let data = res.data
+          if(data.code == 0){
+            this.joinInformation = data.data
+            console.log('iiii',this.joinInformation)
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
+      },
+      create(){
+        this.dialogFormVisible = true
       },
       createProject(){
-        this.$router.replace("/textEdite")
+        let name = this.createProjectModel.name;
+        let desc = this.createProjectModel.description;
+        let formData = qs.stringify({
+          projectName:name,
+          projectDesc:desc,
+        });
+        if(this.createProjectModel.name != ''&&this.createProjectModel.description != ''){
+          this.tokenInstance.createProjectApi(formData).then(res =>{
+            this.dialogFormVisible = false
+            let id = res.data.data
+            window.localStorage.setItem('id',id);//把token存在本地
+            // this.newToken = window.localStorage.getItem('id');//取出存在本地的token
+            this.$router.replace("/textEdite")
+            // this.$router.push({
+            //   path:'/textEdite',
+            //   query:id,
+            // });
+          })
+        }
+      },
+      returnFirstPage(){
+        this.$router.replace("/firstPage")
       },
       collectProject(){
         this.$router.replace("/collectList")

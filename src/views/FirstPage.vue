@@ -16,7 +16,7 @@
       <el-aside :width="isCollapse ? '64px' : '200px'">
         <!-- 伸缩按钮 -->
         <!-- <div class="toggle-button" @click="toggleCollapse">|||</div> -->
-        <div class="avatar_box">s
+        <div class="avatar_box">
           <img src="../assets/auto.jpeg" alt="">
           <span style="color: #FFFFFF;">{{userName}}</span>
           <p style="margin-left:5px;color: #FFFFFF;">个性签名：{{userSignature}}</p>
@@ -29,7 +29,21 @@
             <span style="margin-left: 5px;color: #FFFFFF;">我参与的项目</span>
           </div>
           <div style="margin-left: 10px;margin-top: 5px;">
-            <el-button @click="createProject" style="height: 30px;width: 130px;margin-top: 10px;" type="primary">创建项目</el-button>
+            <el-button @click="create" style="height: 30px;width: 130px;margin-top: 10px;" type="primary">创建项目</el-button>
+            <el-dialog title="创建项目" :visible.sync="dialogFormVisible" width="40%">
+              <el-form :model="createProjectModel">
+                <el-form-item label="项目名称(类名):" label-width="120px">
+                  <el-input style="width: 280px;" v-model="createProjectModel.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="项目简介:" label-width="80px">
+                  &emsp;&emsp;&emsp;<el-input style="width: 280px;" v-model="createProjectModel.description" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="createProject">确 定</el-button>
+              </div>
+            </el-dialog>
           </div>
         </div>
 <!--        侧边栏菜单区域-->
@@ -40,12 +54,6 @@
         :collapse-transition="false"
         :router="true"
         :default-active="activePath">
-<!--          一级菜单-->
-          <!-- <el-menu-item v-for="menu in menuList" :key="menu.menuName" :index="baseUrl + '' + menu.menuPath"
-                        @click="saveNavState(baseUrl + '' + menu.menuPath)">
-            <i :class="menu.menuIcon"></i>
-            <span slot="title">{{menu.menuName}}</span>
-          </el-menu-item> -->
         </el-menu>
       </el-aside>
 <!--      右侧内容主体-->
@@ -61,7 +69,7 @@
             <p style="margin-top: -6%;margin-left: 5%;">易烊千玺</p>
             <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">{{project.createTime}}</p>
           </div>
-          <div @click="sclick()" style="white-space: pre-line;margin-top: -30px;">
+          <div @click="sclick(project.projectId)" style="white-space: pre-line;margin-top: -30px;">
             {{project.code}}
           </div>
         </div>
@@ -75,6 +83,7 @@
 </template>
 
 <script>
+  import qs from 'qs'
   export default {
     name: "FirstPage",
     data() {
@@ -84,6 +93,11 @@
         userSignature:'',
         projectList:[],
         code:'',
+        createProjectModel:{
+          name:'',
+          description:''
+        },
+        dialogFormVisible:false,
         //是否折叠
         isCollapse: false,
         baseUrl: '/home',
@@ -97,22 +111,21 @@
     mounted(){
       this.information = this.$route.query;
       this.init()
-      console.log('fg',this.information)
+      // console.log('fg',this.information)
     },
     methods: {
       init() {
         this.userName = this.information.userName
         this.userSignature = this.information.userSignature
+        window.localStorage.setItem('userName',this.userName);//把token存在本地
+        window.localStorage.setItem('userSignature',this.userSignature);//把token存在本地
         this.projectList = this.information.projectList
         // this.handleCode()
       },
       handleCode() {
-        // console.log('null',this.projectList)
         for (var i = 0, len = this.projectList.length; i < len; i++) {
           let code = this.projectList[i].code
-          console.log('iii',code)
         	let newCode = this.projectList[i].code.replace(/\n/g,"<br/>")
-          console.log('code',newCode)
           this.projectList[i].code = newCode
         }
       },
@@ -122,31 +135,53 @@
         // this.$store.commit('logOutUser');
         // this.$router.replace('/login');
       },
+      create(){
+        this.dialogFormVisible = true
+      },
       createProject(){
-        this.$router.replace("/textEdite")
+        let name = this.createProjectModel.name;
+        let desc = this.createProjectModel.description;
+        let formData = qs.stringify({
+          projectName:name,
+          projectDesc:desc,
+        });
+        if(this.createProjectModel.name != ''&&this.createProjectModel.description != ''){
+          this.tokenInstance.createProjectApi(formData).then(res =>{
+            this.dialogFormVisible = false
+            let id = res.data.data
+            window.localStorage.setItem('id',id);//把token存在本地
+            // this.newToken = window.localStorage.getItem('id');//取出存在本地的token
+            this.$router.replace("/textEdite")
+            // this.$router.push({
+            //   path:'/textEdite',
+            //   query:id,
+            // });
+          })
+        }
       },
       collectProject(){
-        this.tokenInstance.checkColl().then(res=>{
-          console.log('suc',res)
-          let data = res.data
-          if(data.code == 0){
-            let information = data.data
-            // this.$router.push({
-            //   path:'/firstPage',
-            //   query:information,
-            // });
-          }
-        }).catch(error=> {
-          console.log(error);
-          this.$message.error("因网络波动,操作失败!");
-        });
         this.$router.replace("/collectList")
       },
       joinProject(){
         this.$router.replace("/joinList")
       },
-      sclick() {
-        this.$router.replace("/detailPage")
+      sclick(newId) {
+        // let newId = window.localStorage.getItem('id');//取出存在本地的token
+        this.tokenInstance.projectDetail({params:{"projectId":newId}}).then(res=>{
+          console.log("qq",res)
+          let data = res.data
+          if(data.code == 0){
+            let detail = data.data
+            this.$router.push({
+              path:'/detailPage',
+              query:detail,
+            });
+            // this.$router.replace("/detailPage")
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
       },
       clickSec(){
         this.$router.replace("/detailSec")
