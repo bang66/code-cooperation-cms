@@ -62,7 +62,7 @@
             <p style="margin-top: -6%;margin-left: 5%;">{{project.creator}}</p>
             <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">{{project.createTime}}</p>
           </div>
-          <div @click="sclick()" style="white-space: pre-line;margin-top: -30px;">
+          <div @click="sclick(project.projectId)" style="white-space: pre-line;margin-top: -30px;">
             {{project.code}}
           </div>
         </div>
@@ -147,8 +147,11 @@
       collectProject(){
         this.$router.replace("/collectList")
       },
-      sclick() {
-        this.$router.replace("/detailPage")
+      sclick(idNew) {
+        this.$router.push({
+          path:'/detailPage',
+          query:{'id':idNew},
+        });
       },
       //保存链接的激活状态
       saveNavState(activePath) {

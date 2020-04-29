@@ -28,5 +28,11 @@ export default {
   },
   projectDetail(data){
     return tokenInstance.get('/api/v1/project/detail',data)
+  },
+  commentSubmit(data){
+    return tokenInstance.post('/api/v1/comment/submit',data)
+  },
+  collectProject(data){
+    return tokenInstance.post('/api/v1/project/favourite',data)
   }
 };

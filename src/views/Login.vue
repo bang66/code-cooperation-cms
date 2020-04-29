@@ -71,8 +71,9 @@
 
                 // console.log('qq', data.data.token)
                 window.localStorage.setItem('token',data.data.token);//把token存在本地
-                this.newToken = window.localStorage.getItem('token');//取出存在本地的token
-                this.getHome()
+                // this.newToken = window.localStorage.getItem('token');//取出存在本地的token
+                this.$router.replace("/firstPage")
+                // this.getHome()
               }else if(data.code == 2000){
                 this.$message.success("账号错误!");
               }else if(data.code == 2001){
@@ -96,22 +97,22 @@
       },
       resetLoginForm() {
         this.$router.replace("/register")
-      },
-      getHome() {
-        this.tokenInstance.homePage().then(res=>{
-          let data = res.data
-          if(data.code == 0){
-            let information = data.data
-            this.$router.push({
-              path:'/firstPage',
-              query:information,
-            });
-          }
-        }).catch(error=> {
-          console.log(error);
-          this.$message.error("因网络波动,操作失败!");
-        });
       }
+      // getHome() {
+      //   this.tokenInstance.homePage().then(res=>{
+      //     let data = res.data
+      //     if(data.code == 0){
+      //       let information = data.data
+      //       this.$router.push({
+      //         path:'/firstPage',
+      //         query:information,
+      //       });
+      //     }
+      //   }).catch(error=> {
+      //     console.log(error);
+      //     this.$message.error("因网络波动,操作失败!");
+      //   });
+      // }
     }
   }
 </script>

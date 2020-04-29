@@ -18,20 +18,12 @@
       <div class="comment">
         <div>
           <span style="color: #D2691E;">小晴同学</span>
-          <el-input style="display: inline-block;width: 300px;" placeholder="请输入内容"></el-input>
-          <el-button type="primary">发表</el-button>
+          <el-input v-model="commentCon" style="display: inline-block;width: 300px;" placeholder="请输入内容"></el-input>
+          <el-button @click="publish" type="primary">发表</el-button>
         </div>
-        <div style="margin-top: 10px;">
-          <span style="color: #D2691E;">程序猿爱生活</span>
-          <span>：点赞！！！</span>
-        </div>
-        <div style="margin-top: 10px;">
-          <span style="color: #D2691E;">程序猿爱美食</span>
-          <span>：呀呀呀呀呀呀晕晕晕晕晕晕</span>
-        </div>
-        <div style="margin-top: 10px;">
-          <span style="color: #D2691E;">程序猿爱代码</span>
-          <span>：啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</span>
+        <div style="margin-top: 10px;" v-for="(comment,index) in commentList" :value="comment" :key="index">
+          <span style="color: #D2691E;">{{comment.userName}}:</span>
+          <span>{{comment.message}}</span>
         </div>
       </div>
     </div>
@@ -39,26 +31,77 @@
 </template>
 
 <script>
+  import qs from 'qs'
   export default {
     name: "DetailPage",
     data() {
       return {
         displayCom:false,
         codeDetail:'',
-        detail:{}
+        detail:{},
+        commentList:[],
+        commentCon:'',
+        commentId:''
       }
     },
     mounted(){
+      this.detail = {}
       this.detail = this.$route.query;
-      console.log('detail',this.detail)
-      this.init()
+      // console.log('detail',this.detail)
+      let detailId = this.detail.id
+      this.detailCode(detailId)
     },
     methods: {
-      init(){
-        this.codeDetail = this.detail.code
+      detailCode(newId) {
+        this.tokenInstance.projectDetail({params:{"projectId":newId}}).then(res=>{
+          console.log("qq",res)
+          let data = res.data
+          if(data.code == 0){
+            this.codeDetail = data.data.code
+            this.commentList = data.data.messageDTOList
+            this.commentId = data.data.projectId
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
+      },
+      publish(){
+        let id = this.commentId;
+        let content = this.commentCon;
+        let formData = qs.stringify({
+          projectId:id,
+          comment	:content,
+        });
+        this.tokenInstance.commentSubmit(formData).then(res=>{
+          console.log("666",res)
+          let data = res.data
+          if(data.code == 0){
+            this.detailCode(id)
+            this.commentCon = ''
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
       },
       collect(){
-        this.$message('收藏成功！');
+        let id = this.commentId;
+        let formData = qs.stringify({
+          projectId:id
+        });
+        this.tokenInstance.collectProject(formData).then(res=>{
+          console.log("7777",res)
+          let data = res.data
+          if(data.code == 0){
+            this.$message('收藏成功！');
+            // this.detailCode(id)
+            // this.commentCon = ''
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        })
       },
       solitaire(){
         this.$router.replace("/textEdite")

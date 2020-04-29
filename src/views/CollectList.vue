@@ -40,7 +40,7 @@
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="createProject">确 定</el-button>
               </div>
-            </el-dialog>  
+            </el-dialog>
           </div>
         </div>
 <!--        侧边栏菜单区域-->
@@ -62,7 +62,7 @@
             <p style="margin-top: -6%;margin-left: 5%;">{{project.creator}}</p>
             <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">{{project.createTime}}</p>
           </div>
-          <div @click="sclick()" style="white-space: pre-line;margin-top: -30px;">
+          <div @click="sclick(project.projectId)" style="white-space: pre-line;margin-top: -30px;">
             {{project.code}}
           </div>
         </div>
@@ -111,7 +111,7 @@
           let data = res.data
           if(data.code == 0){
             this.collectInformation = data.data
-            console.log('iiii',collectInformation)
+            console.log('iiii',this.collectInformation)
           }
         }).catch(error=> {
           console.log(error);
@@ -151,8 +151,22 @@
       joinProject(){
         this.$router.replace("/joinList")
       },
-      sclick() {
-        this.$router.replace("/detailPage")
+      sclick(idNew) {
+        // this.tokenInstance.projectDetail({params:{"projectId":newId}}).then(res=>{
+        //   console.log("qq",res)
+          // let newId= idNew
+        //   if(data.code == 0){
+        //     let detail = data.data
+            this.$router.push({
+              path:'/detailPage',
+              query:{'id':idNew},
+            });
+        //     // this.$router.replace("/detailPage")
+        //   }
+        // }).catch(error=> {
+        //   console.log(error);
+        //   this.$message.error("因网络波动,操作失败!");
+        // });
       },
       //点击按钮切换菜单的折叠
       toggleCollapse() {

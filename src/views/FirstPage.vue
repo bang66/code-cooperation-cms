@@ -109,8 +109,10 @@
       this.activePath = window.sessionStorage.getItem('activePath');
     },
     mounted(){
-      this.information = this.$route.query;
-      this.init()
+      // this.information = this.$route.query;
+      // this.init()
+      // this.newToken = window.localStorage.getItem('token');//取出存在本地的token
+      this.getHome()
       // console.log('fg',this.information)
     },
     methods: {
@@ -121,6 +123,22 @@
         window.localStorage.setItem('userSignature',this.userSignature);//把token存在本地
         this.projectList = this.information.projectList
         // this.handleCode()
+      },
+      getHome() {
+        this.tokenInstance.homePage().then(res=>{
+          let data = res.data
+          if(data.code == 0){
+            this.information = data.data
+            this.userName = this.information.userName
+            this.userSignature = this.information.userSignature
+            window.localStorage.setItem('userName',this.userName);//把token存在本地
+            window.localStorage.setItem('userSignature',this.userSignature);//把token存在本地
+            this.projectList = this.information.projectList
+          }
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
       },
       handleCode() {
         for (var i = 0, len = this.projectList.length; i < len; i++) {
@@ -166,21 +184,9 @@
         this.$router.replace("/joinList")
       },
       sclick(newId) {
-        // let newId = window.localStorage.getItem('id');//取出存在本地的token
-        this.tokenInstance.projectDetail({params:{"projectId":newId}}).then(res=>{
-          console.log("qq",res)
-          let data = res.data
-          if(data.code == 0){
-            let detail = data.data
-            this.$router.push({
-              path:'/detailPage',
-              query:detail,
-            });
-            // this.$router.replace("/detailPage")
-          }
-        }).catch(error=> {
-          console.log(error);
-          this.$message.error("因网络波动,操作失败!");
+        this.$router.push({
+          path:'/detailPage',
+          query:{'id':newId},
         });
       },
       clickSec(){
