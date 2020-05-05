@@ -20,9 +20,6 @@ export default {
   createProjectApi (data){
     return tokenInstance.post('/api/v1/project/create',data)
   },
-  submitProject (data){
-    return tokenInstance.post('/api/v1/project/submit',data)
-  },
   getJoin(){
     return tokenInstance.get('/api/v1/mine/join')
   },
@@ -34,5 +31,14 @@ export default {
   },
   collectProject(data){
     return tokenInstance.post('/api/v1/project/favourite',data)
+  },
+  dimSearch (data){
+  	return tokenInstance.get('/api/v1/project/query',data)
+  },
+  modifyUser(data){
+    return tokenInstance.post('/api/v1/update/userInfo',data)
+  },
+  runProject(data){
+    return tokenInstance.get('/api/v1/project/run',data)
   }
 };

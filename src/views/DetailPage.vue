@@ -91,7 +91,6 @@
           projectId:id
         });
         this.tokenInstance.collectProject(formData).then(res=>{
-          console.log("7777",res)
           let data = res.data
           if(data.code == 0){
             this.$message('收藏成功！');
@@ -104,7 +103,16 @@
         })
       },
       solitaire(){
-        this.$router.replace("/textEdite")
+        // let id = this.commentId
+        let idObj = {}
+        idObj.id = this.commentId
+        idObj.content = this.codeDetail
+        console.log('idObj', idObj)
+        this.$router.push({
+          path:'/textEdite',
+          query:idObj,
+        });
+        // this.$router.replace("/textEdite")
       },
       writeCom(){
         this.displayCom = true

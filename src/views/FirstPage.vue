@@ -6,8 +6,8 @@
         <img class="logo-img" src="../assets/codeing.png" alt="">
         <span class="system_title">代码接龙</span>
       </div>
-      <el-input placeholder="搜索..." style="width: 250px;"></el-input>
-      <el-button style="margin-left:-30%;" type="primary" icon="el-icon-search"></el-button>
+      <el-input v-model="dimContent" placeholder="搜索..." style="width: 250px;"></el-input>
+      <el-button @click="searchMethod" style="margin-left:-30%;" type="primary" icon="el-icon-search"></el-button>
       <el-button type="info" @click="logOut">退出</el-button>
     </el-header>
 <!--    页面主体区-->
@@ -44,6 +44,21 @@
                 <el-button type="primary" @click="createProject">确 定</el-button>
               </div>
             </el-dialog>
+            <el-button @click="modifyInformation" style="height: 30px;width: 130px;margin-top: 10px;" type="success">修改信息</el-button>
+            <el-dialog title="修改信息" :visible.sync="dialogInformation" width="40%">
+              <el-form :model="modifyInformationModel">
+                <el-form-item label="用户昵称:" label-width="100px">
+                  <el-input style="width: 280px;" v-model="modifyInformationModel.userName" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="个性签名:" label-width="100px">
+                  <el-input style="width: 280px;" v-model="modifyInformationModel.userSignature" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogInformation = false">取 消</el-button>
+                <el-button type="primary" @click="modifyMethod">确 定</el-button>
+              </div>
+            </el-dialog>
           </div>
         </div>
 <!--        侧边栏菜单区域-->
@@ -66,7 +81,7 @@
         <div class="border" v-for="(project,index) in projectList" :value="project" :key="index">
           <div class="name">
             <img src="../assets/auto.jpeg" alt="">
-            <p style="margin-top: -6%;margin-left: 5%;">易烊千玺</p>
+            <p style="margin-top: -6%;margin-left: 5%;">{{project.creator}}</p>
             <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">{{project.createTime}}</p>
           </div>
           <div @click="sclick(project.projectId)" style="white-space: pre-line;margin-top: -30px;">
@@ -97,7 +112,13 @@
           name:'',
           description:''
         },
+        modifyInformationModel:{
+          userName:'',
+          userSignature:''
+        },
         dialogFormVisible:false,
+        dialogInformation:false,
+        dimContent: '',
         //是否折叠
         isCollapse: false,
         baseUrl: '/home',
@@ -109,11 +130,7 @@
       this.activePath = window.sessionStorage.getItem('activePath');
     },
     mounted(){
-      // this.information = this.$route.query;
-      // this.init()
-      // this.newToken = window.localStorage.getItem('token');//取出存在本地的token
       this.getHome()
-      // console.log('fg',this.information)
     },
     methods: {
       init() {
@@ -122,10 +139,10 @@
         window.localStorage.setItem('userName',this.userName);//把token存在本地
         window.localStorage.setItem('userSignature',this.userSignature);//把token存在本地
         this.projectList = this.information.projectList
-        // this.handleCode()
       },
       getHome() {
         this.tokenInstance.homePage().then(res=>{
+          console.log('qqqq',res)
           let data = res.data
           if(data.code == 0){
             this.information = data.data
@@ -149,9 +166,7 @@
       },
       logOut() {
         this.$router.replace("/")
-        // window.sessionStorage.clear();
-        // this.$store.commit('logOutUser');
-        // this.$router.replace('/login');
+        window.sessionStorage.clear()
       },
       create(){
         this.dialogFormVisible = true
@@ -168,7 +183,6 @@
             this.dialogFormVisible = false
             let id = res.data.data
             window.localStorage.setItem('id',id);//把token存在本地
-            // this.newToken = window.localStorage.getItem('id');//取出存在本地的token
             this.$router.replace("/textEdite")
             // this.$router.push({
             //   path:'/textEdite',
@@ -176,6 +190,42 @@
             // });
           })
         }
+      },
+      modifyInformation(){
+        this.dialogInformation = true
+      },
+      modifyMethod(){
+        let newName = this.modifyInformationModel.userName;
+        let sign = this.modifyInformationModel.userSignature;
+        let formData = qs.stringify({
+          userName:newName,
+          signature:sign,
+        });
+        if(this.modifyInformationModel.userName != ''&&this.modifyInformationModel.userSignature != ''){
+          this.tokenInstance.modifyUser(formData).then(res =>{
+            if(res.data.code == 0){
+              console.log('uu')
+              this.dialogInformation = false
+              this.getHome()
+            }
+          })
+        }else{
+          this.$message('用户昵称和个性签名不能为空');
+        }
+      },
+      //模糊搜索
+      searchMethod(){
+        let newWord = this.dimContent
+        this.tokenInstance.dimSearch({params:{"keyWord":newWord}}).then(res=>{
+          let data = res.data
+          if(res.data.code == 0){
+            this.projectList = data.data
+          }
+
+        }).catch(error=> {
+          console.log(error);
+          this.$message.error("因网络波动,操作失败!");
+        });
       },
       collectProject(){
         this.$router.replace("/collectList")
