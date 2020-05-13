@@ -1,6 +1,8 @@
 {
-  "name": "bigservice",
+  "name": "code-cooperation-cms",
   "version": "1.0.0",
+  "main": "app.js",
+  "license": "ISC",
   "description": "A Vue.js project",
   "author": "qing12345678 <1220556574@qq.com>",
   "private": true,
@@ -14,7 +16,8 @@
     "element-ui": "^2.13.0",
     "vue": "^2.5.2",
     "vue-quill-editor": "^3.0.6",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "express": "^4.15.3"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
