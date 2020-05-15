@@ -131,6 +131,8 @@
     },
     mounted(){
       this.getHome()
+      this.modifyInformationModel.userName = this.userName;
+      this.modifyInformationModel.userSignature = this.userSignature;
     },
     methods: {
       init() {
