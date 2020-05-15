@@ -130,9 +130,7 @@
       this.activePath = window.sessionStorage.getItem('activePath');
     },
     mounted(){
-      this.getHome()
-      this.modifyInformationModel.userName = this.userName;
-      this.modifyInformationModel.userSignature = this.userSignature;
+      this.getHome();
     },
     methods: {
       init() {
@@ -153,6 +151,8 @@
             window.localStorage.setItem('userName',this.userName);//把token存在本地
             window.localStorage.setItem('userSignature',this.userSignature);//把token存在本地
             this.projectList = this.information.projectList
+            this.modifyInformationModel.userName = this.userName;
+            this.modifyInformationModel.userSignature = this.userSignature;
           }
         }).catch(error=> {
           console.log(error);
