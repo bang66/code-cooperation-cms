@@ -52,9 +52,10 @@
 		},
 		run(){
 			let newId = this.id;
-			console.log("id-->" , newId);
+			console.log('id-->', newId);
 			if (newId == null || newId == undefined || newId == '') {
 			  newId = window.localStorage.getItem('id');
+			  this.id = newId;
       }
 			let newContent = this.content;
 			let formData = {
