@@ -17,7 +17,6 @@
     <div style="margin-top: 40px;" v-show="displayCom">
       <div class="comment">
         <div>
-          <span style="color: #D2691E;">小晴同学</span>
           <el-input v-model="commentCon" style="display: inline-block;width: 300px;" placeholder="请输入内容"></el-input>
           <el-button @click="publish" type="primary">发表</el-button>
         </div>
