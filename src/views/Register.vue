@@ -71,7 +71,15 @@
           console.log("qq",res)
           let data = res.data
           if(data.code == 0){
-
+            this.$message({
+              message: '发送成功！',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: '发送失败！',
+              type: 'error'
+            })
           }
         }).catch(error=> {
           console.log(error);
