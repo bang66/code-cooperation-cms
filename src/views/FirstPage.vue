@@ -84,7 +84,9 @@
             <p style="margin-top: -6%;margin-left: 5%;">{{project.creator}}</p>
             <p style="margin-top: -1%;margin-left: 5%;color: #A1A1A1;">{{project.createTime}}</p>
           </div>
-          <div @click="sclick(project.projectId)" style="white-space: pre-line;margin-top: -30px;">
+          <div @click="sclick(project.projectId)"
+		  style="white-space: pre-line;margin-top: -30px;display: -webkit-box;
+		  -webkit-box-orient: vertical;-webkit-line-clamp: 8;overflow: hidden;">
             {{project.code}}
           </div>
         </div>

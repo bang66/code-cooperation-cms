@@ -40,15 +40,16 @@
         detail:{},
         commentList:[],
         commentCon:'',
-        commentId:''
+        commentId:'',
+        id: ''
       }
     },
     mounted(){
       this.detail = {}
       this.detail = this.$route.query;
-      // console.log('detail',this.detail)
-      let detailId = this.detail.id
-      this.detailCode(detailId)
+      console.log('detail',this.detail)
+      this.id = this.detail.id
+      this.detailCode(this.id)
     },
     methods: {
       detailCode(newId) {
@@ -120,16 +121,49 @@
         this.$router.replace("/firstPage")
       },
       run(){
-        this.$alert('hello world', '运行结果', {
-          confirmButtonText: '确定',
-          callback: action => {
-            this.$message({
-              type: 'info',
-              message: `action: ${ action }`
-            });
-          }
-        });
-      }
+      	let newId = this.id;
+      	console.log('id-->', newId);
+      	if (newId == null || newId == undefined || newId == '') {
+      	  newId = window.localStorage.getItem('id');
+      	  this.id = newId;
+        }
+      	let newContent = this.codeDetail;
+      	let formData = {
+      	  projectId:newId,
+      	  code:newContent,
+      	};
+      	if(this.content != ''){
+      	  this.jsonInstance.submitProject(formData).then(res =>{
+      		console.log('res',res)
+      		if(res.data.code == 0){
+      			this.runSuccess()
+      		}
+      	  })
+      	}
+      },
+      runSuccess(){
+        console.log('kk')
+      	let newId = this.id;
+      	this.tokenInstance.runProject({params:{"projectId":newId}}).then(res =>{
+      	  console.log('res',res)
+      	  if(res.data.code == 0){
+      		let result = res.data.data
+      		this.$message('运行成功')
+      		this.runResult(result)
+      	  }
+      	})
+      },
+      runResult(result){
+      	  this.$alert(result, '运行结果', {
+      		confirmButtonText: '确定',
+      		callback: action => {
+      		  this.$message({
+      			type: 'info',
+      			message: `action: ${ action }`
+      		  });
+      		}
+      	  });
+      },
     }
   }
 </script>
